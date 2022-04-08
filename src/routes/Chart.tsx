@@ -78,5 +78,5 @@ function Chart({ coinId }: ChartProps) {
 }
 // const params = useParams();
 // console.log(params);
-//coinId 가져오기 또는 서브 Router 에서 porps로 받아오기
+//coinId 가져오기 또는 서브 Router 에서 porps로 받아오기 한다..
 export default Chart;
