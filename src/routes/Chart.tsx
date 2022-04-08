@@ -70,7 +70,7 @@ function Chart({ coinId }: ChartProps) {
             tooltip: { y: { formatter: (value) => `$ ${value.toFixed(3)}` } },
           }}
         />
-        //apexvhart는 위와같이 다양한 옵션이 있다.
+        //apexvhart는 위와같이 다양한 옵션이 있다!!
         //일일히 options 수정하는게 어렵다면 apex사이트의 [demos] 로 가서 이미 만들어져 있는 것들을 사용하자.
       )}
     </div>
