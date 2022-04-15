@@ -3,22 +3,16 @@ import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { fetchCoins } from './api';
 import { Helmet } from 'react-helmet';
-
-import { useHistory } from 'react-router-dom';
+import Header from './Header';
 const Container = styled.div`
   padding: 0px 20px;
   max-width: 480px;
   margin: 0 auto;
 `;
 
-const Header = styled.header`
-  height: 20vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const CoinsList = styled.ul`
+  padding-top: 13vh;
 `;
-
-const CoinsList = styled.ul``;
 
 const Coin = styled.li`
   background-color: white;
@@ -83,7 +77,7 @@ function Coins() {
   console.log(isLoading, data);
   //useQery는 두개의 식별자가 필요하다. 첫번째는 고유식별자, 두번째는 fetcher함수이다.
   // useQuery는 isLoading 이라고 불리는 boolean값을 return하는데 이전에 있던
-  // const[lading,setLoading]과 setLoading(false)를 대체할 수 있는 것이다.
+  // const[loading,setLoading]과 setLoading(false)를 대체할 수 있는 것이다.
   // 총 설명: useQuery hook에서 fetcher함수 fetchCoins를 불러오고 그함수가
   // isLoading 즉, fetcher함수가 끝난다면 react Query가 말해줄 것이다.
   // 그리고 return 값을 data에 넣어줄 것이다. 아래에서 state에 넣었던 것처럼..
@@ -101,51 +95,42 @@ function Coins() {
   //     setLoading(false);
   //   })();
   // }, []);
-  let history = useHistory();
 
   return (
-    <Container>
-      <Helmet>
-        <title>코인</title>
-      </Helmet>
-      <Header>
-        <BackBtn
-          onClick={() => {
-            history.goBack();
-          }}
-        >
-          👈
-        </BackBtn>
-        <Title>코인</Title>
-      </Header>
-      {isLoading ? (
-        <Loader>"Loading..."</Loader>
-      ) : (
-        //loading 이 참이면 Loading... 출력, 거짓이면 CoinsList 보여줌
-        <CoinsList>
-          {data?.slice(0, 100).map((coin) => (
-            <Coin key={coin.id}>
-              <Img
-                src={`https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${coin.name
-                  .toLowerCase()
-                  .split(' ')
-                  .join('-')}.png`}
-              />
-
-              <Link
-                to={{
-                  pathname: `/${coin.id}`,
-                  state: { name: coin.name },
-                  //Link를 이용해 string 이외에 더 많은 데이터를 보낼 수 있다
-                }}
-              >
-                {coin.id}
-              </Link>
-            </Coin>
-          ))}
-        </CoinsList>
-      )}
-    </Container>
+    <>
+      <Header />
+      <Container>
+        <Helmet>
+          <title>코인</title>
+        </Helmet>
+        {isLoading ? (
+          <Loader>"Loading..."</Loader>
+        ) : (
+          //loading 이 참이면 Loading... 출력, 거짓이면 CoinsList 보여줌
+          <CoinsList>
+            {data?.slice(0, 100).map((coin) => (
+              <Coin key={coin.id}>
+                <Img
+                  src={`https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${coin.name
+                    .toLowerCase()
+                    .split(' ')
+                    .join('-')}.png`}
+                />
+                <Link
+                  to={{
+                    pathname: `/${coin.id}`,
+                    state: { name: coin.name },
+                    //Link를 이용해 string 이외에 더 많은 데이터를 보낼 수 있다
+                  }}
+                >
+                  {coin.id}
+                </Link>
+              </Coin>
+            ))}
+          </CoinsList>
+        )}
+      </Container>
+    </>
   );
 }
 

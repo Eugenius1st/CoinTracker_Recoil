@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Switch, Route, useLocation, useParams, useRouteMatch } from 'react-router';
 import { Link } from 'react-router-dom';
-
+import Header from './Header';
 import styled from 'styled-components';
 import Chart from './Chart';
 import Price from './Price';
 import { fetchCoinInfo, fetchCoinTickers } from './api';
 import { Helmet } from 'react-helmet';
-
 import { useHistory } from 'react-router-dom';
 //useParams 는 URL에서 관심있어 하는 정보를 잡아낼 수 있게 해준다.
 
@@ -29,92 +28,70 @@ function Coin() {
       // 5000ms(5초)마다 refetch 하도록 한다. 실시간으로 price가 바뀌게 되는 것이다.
     }
   );
-  //같은 키를 쓰면 좋지 않으므로 key가....여기서 멈춤
-
-  // const [loading, setLoading] = useState(true);
-  // const [info, setInfo] = useState<InfoData>();
-  // const [priceInfo, setPriceInfo] = useState<PriceData>();
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-  //     const priceData = await (
-  //       await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-  //     ).json();
-  //     setInfo(infoData);
-  //     setPriceInfo(priceData);
-  //     setLoading(false);
-  //   })();
-  // }, [coinId]);
 
   const loading = infoLoading || tickersLoading;
   let history = useHistory();
   return (
-    <Container>
-      <Helmet>
-        <title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</title>
-      </Helmet>
-      <Header>
-        <BackBtn
-          onClick={() => {
-            history.goBack();
-          }}
-        >
-          👈
-        </BackBtn>
+    <>
+      <Header />
+      <Container>
+        <Helmet>
+          <title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</title>
+        </Helmet>
+
         <Title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</Title>
-      </Header>
-      {loading ? (
-        <Loader>Loading...</Loader>
-      ) : (
-        <>
-          <Overview>
-            <OverviewItem>
-              <span>Rank:</span>
-              <span>{infoData?.rank}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Symbol:</span>
-              <span>${infoData?.symbol}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Price:</span>
-              <span>{tickerData?.quotes.USD.price.toFixed(3)}</span>
-            </OverviewItem>
-          </Overview>
-          <Description>{infoData?.description}</Description>
-          <Overview>
-            <OverviewItem>
-              <span>Total Suply:</span>
-              <span>{tickerData?.total_supply}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Max Supply:</span>
-              <span>{tickerData?.max_supply}</span>
-            </OverviewItem>
-          </Overview>
+        {loading ? (
+          <Loader>Loading...</Loader>
+        ) : (
+          <>
+            <Overview>
+              <OverviewItem>
+                <span>Rank:</span>
+                <span>{infoData?.rank}</span>
+              </OverviewItem>
+              <OverviewItem>
+                <span>Symbol:</span>
+                <span>${infoData?.symbol}</span>
+              </OverviewItem>
+              <OverviewItem>
+                <span>Price:</span>
+                <span>{tickerData?.quotes.USD.price.toFixed(3)}</span>
+              </OverviewItem>
+            </Overview>
+            <Description>{infoData?.description}</Description>
+            <Overview>
+              <OverviewItem>
+                <span>Total Suply:</span>
+                <span>{tickerData?.total_supply}</span>
+              </OverviewItem>
+              <OverviewItem>
+                <span>Max Supply:</span>
+                <span>{tickerData?.max_supply}</span>
+              </OverviewItem>
+            </Overview>
 
-          <Tabs>
-            <Tab isActive={chartMatch !== null}>
-              <Link to={`/${coinId}/chart`}>Chart</Link>
-            </Tab>
-            <Tab isActive={priceMatch !== null}>
-              <Link to={`/${coinId}/price`}>Price</Link>
-            </Tab>
-          </Tabs>
+            <Tabs>
+              <Tab isActive={chartMatch !== null}>
+                <Link to={`/${coinId}/chart`}>Chart</Link>
+              </Tab>
+              <Tab isActive={priceMatch !== null}>
+                <Link to={`/${coinId}/price`}>Price</Link>
+              </Tab>
+            </Tabs>
 
-          {/* 다양한 URL 로 Switch 하기 */}
-          <Switch>
-            <Route path={`/${coinId}/price`}>
-              <Price coinId={coinId} />
-            </Route>
-            <Route path={`/${coinId}/chart`}>
-              <Chart coinId={coinId} />
-            </Route>
-          </Switch>
-        </>
-      )}
-    </Container>
+            {/* 다양한 URL 로 Switch 하기 */}
+            <Switch>
+              <Route path={`/${coinId}/price`}>
+                <Price coinId={coinId} />
+              </Route>
+              <Route path={`/${coinId}/chart`}>
+                <Chart coinId={coinId} />
+              </Route>
+            </Switch>
+          </>
+        )}
+      </Container>
+    </>
   );
 }
 
@@ -183,18 +160,14 @@ interface PriceData {
 
 const Container = styled.div`
   padding: 0px 20px;
+  padding-top: 13vh;
   max-width: 480px;
   margin: 0 auto;
 `;
 
-const Header = styled.header`
-  height: 20vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const Title = styled.h1`
+  text-align: center;
+  padding-bottom: 5%;
   font-size: 50px;
   color: ${(props) => props.theme.accentColor};
 `;
@@ -247,12 +220,4 @@ const Tab = styled.span<{ isActive: boolean }>`
   }
 `;
 
-const BackBtn = styled.button`
-  border: 0;
-  background-color: transparent;
-  font-size: 30px;
-  border: 1px solid white;
-  border-radius: 50%;
-  padding: 1% 1%;
-`;
 export default Coin;
